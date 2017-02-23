@@ -1,3 +1,0 @@
-echo "YOUR BUCKET IS $AH_BUCKET"
-echo "LIB IS INSTALLED AT $AH_LIB"
-ah_s3_ls
