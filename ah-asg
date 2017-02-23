@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+usage() {
+  local prog=$(basename $0)
+  exec 1>&2
+  [[ $1 ]] && echo "$prog: $1" && echo
+  cat <<EOT
+USAGE: $prog [-h]
+       $prog [-d <count>] [-m <count>] [-M <count>]
+
+OPTIONS:
+  -h          Print this and exit.
+  -d <count>  Set <asg-name>'s desired instance count to <count>.
+  -m <count>  Set <asg-name>'s minimum instance count to <count>.
+  -M <count>  Set <asg-name>'s maximum instance count to <count>.
+EOT
+  exit 1;
+}
+
+asg_name="$(ah_var AH_ENV)"
+
+while getopts ":hsd:m:M:" o; do
+    case "${o}" in
+        d) set_args="$set_args --desired-capacity $OPTARG" ;;
+        m) set_args="$set_args --min-size $OPTARG" ;;
+        M) set_args="$set_args --max-size $OPTARG" ;;
+        *) usage ;;
+    esac
+done
+
+if [[ -n "$set_args" ]]; then
+  aws autoscaling update-auto-scaling-group \
+    --auto-scaling-group-name "$asg_name" $set_args
+else
+  echo -e "Desired\tMin\tMax"
+  aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names "$asg_name" \
+    |jt AutoScalingGroups [ DesiredCapacity % ] [ MinSize % ] [ MaxSize % ]
+fi
