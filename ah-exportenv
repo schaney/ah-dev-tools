@@ -1,2 +1,4 @@
 #!/bin/bash
-eval "cat <(ah secrets) <(ah getvars) | sed 's/^/export '"
+echo -n "exporting env for $(ah env)..."
+eval $(cat <(ah secrets) <(ah getvars) | sed 's/^/export /')
+echo " done."
