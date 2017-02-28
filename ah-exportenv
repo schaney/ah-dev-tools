@@ -1,5 +1,3 @@
 #!/bin/bash
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-echo -n "exporting env for $(ah env)..."
-eval $($dir/ah-showenv) | sed 's/^/export /')
-echo " done."
+$dir/ah-showenv | sed 's/^/export /'
