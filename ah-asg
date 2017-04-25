@@ -32,7 +32,7 @@ if [[ -n "$set_args" ]]; then
   aws autoscaling update-auto-scaling-group \
     --auto-scaling-group-name "$asg_name" $set_args
 else
-  echo -e "Desired\tMin\tMax"
+  echo -e "Desired [-d]\tMin [-m]\tMax [-M]"
   aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names "$asg_name" \
     |jt AutoScalingGroups [ DesiredCapacity % ] [ MinSize % ] [ MaxSize % ]
 fi
