@@ -1,14 +1,23 @@
 #!/usr/bin/env bash
 
 command -v parallel >/dev/null 2>&1 || {
-	echo >&2 "I require GNU parallel but it's not installed.  Aborting.";
-	echo;
-	echo "Install GNU Parallel and run it once with: parallel --bibtex";
-	echo "This will activate the license so $(basename $0) can use it."; exit 1;
+	  echo >&2 "I require GNU parallel but it's not installed.  Aborting.";
+	  echo;
+	  echo "Install GNU Parallel and run it once with: parallel --bibtex";
+	  echo "This will activate the license so $(basename $0) can use it."; exit 1;
 }
 
 read -p "deploy $(ah env)? [Yn] " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-  ah status | grep $(ah env) | cut -f6 | parallel ssh {} sudo ah-client deploy
+    if [[ $AH_VPC ]]; then
+        col=7
+    else
+        col=6
+    fi
+    ah status \
+        | grep $(ah env) \
+        | cut -f $col \
+        | parallel ssh {} sudo ah-client deploy
+
 fi
